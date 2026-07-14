@@ -1,1 +1,1 @@
-{"step": "loading", "progress": 22, "message": "Data split - Train:139 Val:31 Test:30"}
+{"step": "classical_training", "progress": 81, "message": "Training Gradient Boosting \u2026"}
