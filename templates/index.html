@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wildlife Track AI — Species Detection & Recognition</title>
+  <meta name="description" content="AI-powered wildlife tracking system using CNN, face recognition, and multiple supervised ML models to detect and identify animal species." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── Animated background ─────────────────────────────────────────────────── -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── Toast container ────────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── Navigation ─────────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <a class="nav-brand" href="/">
+    <div class="nav-logo">🦁</div>
+    <span class="nav-title">Wildlife<span>Track</span> AI</span>
+  </a>
+
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="nav-badge">CNN + ML</span>
+    <div class="nav-status">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-label">Checking…</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Page wrapper ────────────────────────────────────────────────────────── -->
+<div class="page-wrapper">
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-eyebrow">🌿 AI-Powered Wildlife Recognition</div>
+    <h1 class="hero-title">
+      Track Wildlife with<br />
+      <span class="accent">Deep Intelligence</span>
+    </h1>
+    <p class="hero-sub">
+      Upload any wildlife image. Our system runs it through a <strong>CNN</strong> (MobileNetV2),
+      performs <strong>individual face recognition</strong>, and compares accuracy across
+      <strong>5 supervised ML models</strong> — all in one click.
+    </p>
+    <div class="hero-chips">
+      <span class="chip cnn"><span class="dot"></span>CNN MobileNetV2</span>
+      <span class="chip face"><span class="dot"></span>Face Recognition</span>
+      <span class="chip ml"><span class="dot"></span>Random Forest</span>
+      <span class="chip ml"><span class="dot"></span>SVM · KNN · GBM</span>
+      <span class="chip cv"><span class="dot"></span>OpenCV</span>
+    </div>
+  </section>
+
+  <!-- ── Main two-column grid ────────────────────────────────────────────── -->
+  <div class="main-grid">
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         LEFT COLUMN — Upload + Controls
+    ───────────────────────────────────────────────────────────────────── -->
+    <div>
+
+      <!-- Upload Card -->
+      <div class="card glow">
+        <div class="card-title">
+          <span class="icon">📷</span>
+          Upload Wildlife Image
+        </div>
+
+        <div class="upload-zone" id="upload-zone">
+          <span class="upload-icon">🦊</span>
+          <div class="upload-label">Drop image here or click to browse</div>
+          <div class="upload-hint">Supports <span>JPG, PNG, WebP</span> · Max 20 MB</div>
+          <input type="file" id="file-input" accept="image/*" />
+        </div>
+
+        <!-- Image Preview + face canvas overlay -->
+        <div class="preview-wrap" id="preview-wrap">
+          <img id="preview-img" src="" alt="Wildlife preview" />
+          <canvas id="face-canvas"></canvas>
+          <div class="preview-badge" id="preview-badge" style="display:none;"></div>
+        </div>
+
+        <button class="btn-analyse" id="btn-analyse" disabled>
+          <div class="spinner"></div>
+          <span class="btn-text">🔍 &nbsp;Analyse Wildlife</span>
+        </button>
+      </div>
+
+      <!-- Training Card -->
+      <div class="card section-gap">
+        <div class="card-title">
+          <span class="icon">⚙️</span>
+          Model Training
+        </div>
+
+        <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+          First time? Click below to generate a synthetic wildlife dataset and train
+          all 6 models (CNN + 5 classical ML). Takes ~5–15 min depending on hardware.
+        </p>
+
+        <button class="btn-train" id="btn-train">
+          🚀 &nbsp;Train All Models
+        </button>
+
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-label" id="progress-label">Initialising…</div>
+        </div>
+      </div>
+
+      <!-- Species Reference Card -->
+      <div class="card section-gap">
+        <div class="card-title">
+          <span class="icon">📋</span>
+          Supported Species (10 Classes)
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="chip" style="justify-content:flex-start;">🐯 Tiger</div>
+          <div class="chip" style="justify-content:flex-start;">🦁 Lion</div>
+          <div class="chip" style="justify-content:flex-start;">🐘 Elephant</div>
+          <div class="chip" style="justify-content:flex-start;">🦓 Zebra</div>
+          <div class="chip" style="justify-content:flex-start;">🦒 Giraffe</div>
+          <div class="chip" style="justify-content:flex-start;">🐺 Wolf</div>
+          <div class="chip" style="justify-content:flex-start;">🐻 Bear</div>
+          <div class="chip" style="justify-content:flex-start;">🦌 Deer</div>
+          <div class="chip" style="justify-content:flex-start;">🐆 Leopard</div>
+          <div class="chip" style="justify-content:flex-start;">🦅 Eagle</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         RIGHT COLUMN — Results + Charts
+    ───────────────────────────────────────────────────────────────────── -->
+    <div>
+
+      <!-- Results Panel (hidden until first prediction) -->
+      <div id="results-panel" class="hidden">
+
+        <!-- Species Detection Hero -->
+        <div class="card glow" style="margin-bottom:20px;">
+          <div class="card-title">
+            <span class="icon">🎯</span>
+            Detection Result
+          </div>
+
+          <div class="result-hero" id="result-hero">
+            <div>
+              <span class="species-icon" id="result-species-icon">🐾</span>
+            </div>
+            <div>
+              <div class="species-label">Detected Species</div>
+              <div class="species-name" id="result-species-name">—</div>
+              <div class="species-conf" id="result-species-conf"></div>
+            </div>
+            <div class="consensus-badge">
+              <div class="votes" id="result-votes">—</div>
+              <div class="votes-label">Vote Consensus</div>
+            </div>
+          </div>
+
+          <!-- Face Recognition Result -->
+          <div class="face-result">
+            <div class="face-result-header">
+              <span>🔬</span>
+              Individual Face Recognition
+            </div>
+            <div id="face-id" class="face-id-unknown">—</div>
+            <div class="face-conf-row">
+              <span id="face-conf" style="font-size:0.8rem;color:var(--text-muted);">—</span>
+            </div>
+          </div>
+
+          <!-- Per-model prediction bars -->
+          <div class="card-title" style="margin-top:8px;">
+            <span class="icon">📊</span>
+            Per-Model Species Prediction
+          </div>
+          <div class="model-preds" id="model-preds"></div>
+        </div>
+
+      </div>
+
+      <!-- Model Comparison Card (always visible) -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">📈</span>
+          Model Accuracy Comparison
+        </div>
+
+        <div id="chart-section">
+          <div class="chart-wrap">
+            <canvas id="bar-chart"></canvas>
+          </div>
+          <div class="empty-state" id="chart-empty" style="display:none;">
+            <div class="icon">📉</div>
+            <p>
+              <strong>No metrics yet.</strong><br />
+              Train the models first using the button on the left.<br />
+              The comparison chart will appear here after training completes.
+            </p>
+          </div>
+        </div>
+
+        <!-- Metrics Table -->
+        <div class="divider"></div>
+
+        <div id="winner-model" style="font-size:0.85rem;font-weight:600;color:var(--amber);margin-bottom:12px;min-height:20px;"></div>
+
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Model</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1 Score</th>
+            </tr>
+          </thead>
+          <tbody id="metrics-tbody">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state" style="padding:24px;">
+                  <p style="color:var(--text-dim);">Train models to see the comparison table.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Architecture Info Card -->
+      <div class="card section-gap">
+        <div class="card-title">
+          <span class="icon">🧠</span>
+          System Architecture
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏗️</div>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:3px;">CNN — MobileNetV2 Transfer Learning</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">ImageNet pre-trained base (frozen) → Custom classification head with 256-d embedding layer for feature extraction</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👁️</div>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:3px;">Animal Face Recognition</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">OpenCV head-region detection → CNN embedding extraction → Cosine similarity matching against individual animal database</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚖️</div>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:3px;">Classical ML on CNN Embeddings</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">256-d CNN features feed into Random Forest, SVM, KNN, Gradient Boosting & Logistic Regression for accuracy benchmarking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end right column -->
+  </div>
+  <!-- end main-grid -->
+
+</div>
+<!-- end page-wrapper -->
+
+<!-- App script -->
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>
