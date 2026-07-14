@@ -24,10 +24,10 @@
     "f1": 100.0
   },
   "Gradient Boosting": {
-    "accuracy": 96.67,
-    "precision": 97.5,
-    "recall": 96.67,
-    "f1": 96.57
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0
   },
   "Logistic Regression": {
     "accuracy": 100.0,
