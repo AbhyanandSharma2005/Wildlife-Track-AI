@@ -63,7 +63,7 @@ def _load_data(verbose: bool = True) -> tuple:
     X_val,   y_val   = splits['val']
     X_test,  y_test  = splits['test']
     _update_status('loading', 22,
-                   f'Data split — Train:{len(X_train)} Val:{len(X_val)} Test:{len(X_test)}')
+                   f'Data split - Train:{len(X_train)} Val:{len(X_val)} Test:{len(X_test)}')
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
@@ -106,7 +106,7 @@ def _train_cnn(X_train, y_train, X_val, y_val, epochs: int) -> tuple:
             vacc = logs.get('val_accuracy', 0) * 100
             _update_status(
                 'cnn_training', progress,
-                f'Epoch {epoch+1}/{epochs} — '
+                f'Epoch {epoch+1}/{epochs} - '
                 f'acc:{acc:.1f}% val_acc:{vacc:.1f}%'
             )
 

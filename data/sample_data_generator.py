@@ -110,14 +110,14 @@ def generate_dataset(output_dir: str = 'data/raw', samples_per_class: int = 100)
     output_path = Path(output_dir)
     total = len(SPECIES) * samples_per_class
 
-    print(f"Generating {total} synthetic images → {output_path}")
+    print(f"Generating {total} synthetic images -> {output_path}")
     for species in SPECIES:
         species_dir = output_path / species
         species_dir.mkdir(parents=True, exist_ok=True)
         for i in range(samples_per_class):
             img = generate_synthetic_image(species, seed=i * len(SPECIES) + SPECIES.index(species))
             img.save(species_dir / f'{species.lower()}_{i:04d}.jpg', quality=92)
-        print(f"  ✓ {species}: {samples_per_class} images")
+        print(f"  * {species}: {samples_per_class} images")
 
     print(f"Dataset generation complete. Total: {total} images")
 
