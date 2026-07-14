@@ -255,12 +255,17 @@ if __name__ == '__main__':
                         help='Synthetic images per class (default 100)')
     parser.add_argument('--no-generate',   action='store_true',
                         help='Skip synthetic data generation')
+    parser.add_argument('--demo',          action='store_true',
+                        help='Run a quick demo training (2 epochs, 20 samples)')
     parser.add_argument('--data-dir',      default=str(DATA_DIR))
     args = parser.parse_args()
 
+    epochs = 2 if args.demo else args.epochs
+    samples = 20 if args.demo else args.samples
+
     run_training(
         data_dir=args.data_dir,
-        epochs=args.epochs,
+        epochs=epochs,
         generate_demo=not args.no_generate,
-        samples_per_class=args.samples,
+        samples_per_class=samples,
     )
