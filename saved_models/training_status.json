@@ -1,1 +1,1 @@
-{"step": "generating", "progress": 5, "message": "Generating synthetic demo dataset \u2026"}
+{"step": "loading", "progress": 22, "message": "Data split - Train:139 Val:31 Test:30"}
